@@ -15,7 +15,7 @@ const app = express();
 
 app.use(cors());
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 
 mongoose.connect('mongodb://localhost:27017/rbac', { useNewUrlParser: true }).then(() => {
   console.log('Connected to the Database successfully')
