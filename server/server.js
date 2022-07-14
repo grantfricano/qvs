@@ -1,4 +1,8 @@
 const express = require('express');
+const helmet = require('helmet')
+const cookieParser = require('cookie-parser')
+const compression = require('compression')
+
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken');
@@ -14,6 +18,12 @@ require("dotenv").config({
 const app = express();
 
 app.use(cors());
+app.use(helmet())
+app.use(compression())
+app.use(express.json())
+app.use(express.urlencoded({ extended: false }))
+app.use(cookieParser())
+app.use(bodyParser.json())
 
 const PORT = process.env.PORT || 3001;
 
@@ -22,6 +32,10 @@ mongoose.connect('mongodb://localhost:27017/rbac', { useNewUrlParser: true }).th
 });
 
 app.use(bodyParser.urlencoded({ extended: true }));
+
+app.get("/api", (req, res) => {
+  res.json({ message: "Hello from server!" });
+});
 
 app.use(async (req, res, next) => {
   if (req.headers["x-access-token"]) {
@@ -44,7 +58,13 @@ app.use(async (req, res, next) => {
   }
 });
 
-app.use('/', routes);
+app.use('/test', routes);
+
+app.use((err, req, res, next) => {
+   console.error(err.stack)
+
+   res.status(500).send('Something broke!')
+})
 
 app.listen(PORT, () => {
   console.log('Server is listening on Port:', PORT)

@@ -1,13 +1,15 @@
 // server/controllers/userController.js
-
 const User = require('../models/userModel');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
 // Add this to the top of the file
 const { roles } = require('../roles')
-
  
+exports.welcomeMessage = async (req, res) => {
+  res.json({ message: "Hello from server buddy!" });
+ }
+
 exports.grantAccess = function(action, resource) {
  return async (req, res, next) => {
   try {
@@ -37,8 +39,6 @@ exports.allowIfLoggedin = async (req, res, next) => {
    next(error);
   }
 }
-
-
 
 async function hashPassword(password) {
  return await bcrypt.hash(password, 10);
@@ -88,11 +88,6 @@ exports.login = async (req, res, next) => {
  }
 }
 
-exports.welcomeMessage = async (req, res, next) => {
- res.status(200).json({
-    data:'this is server side'
- });
-}
 
 exports.getUsers = async (req, res, next) => {
  const users = await User.find({});
