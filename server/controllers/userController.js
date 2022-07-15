@@ -55,6 +55,9 @@ exports.saveData = async (req, res, next) => {
       const username = req.body.username;
       const userData = new Data({ username });
       await userData.save();
+      res.json({
+          message: "successfully added!"
+      })
   } catch (error) {
       next(error)
   }
