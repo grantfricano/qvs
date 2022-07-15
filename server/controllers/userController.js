@@ -1,5 +1,6 @@
 // server/controllers/userController.js
 const User = require('../models/userModel');
+const Data = require('../models/userData');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
@@ -46,6 +47,17 @@ async function hashPassword(password) {
 
 async function validatePassword(plainPassword, hashedPassword) {
  return await bcrypt.compare(plainPassword, hashedPassword);
+}
+
+exports.saveData = async (req, res, next) => {
+    
+  try {
+      const username = req.body.username;
+      const userData = new Data({ username });
+      await userData.save();
+  } catch (error) {
+      next(error)
+  }
 }
 
 exports.signup = async (req, res, next) => {
