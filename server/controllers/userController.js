@@ -103,6 +103,12 @@ exports.login = async (req, res, next) => {
  }
 }
 
+exports.getData = async (req, res, next) => {
+ Data.find({})
+    .then(data => {
+     res.send(data)
+ })
+}
 
 exports.getUsers = async (req, res, next) => {
  const users = await User.find({});
