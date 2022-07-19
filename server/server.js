@@ -1,4 +1,5 @@
 const express = require('express');
+
 const helmet = require('helmet')
 const cookieParser = require('cookie-parser')
 const compression = require('compression')
@@ -16,6 +17,9 @@ require("dotenv").config({
 });
 
 const app = express();
+const server = require('http').createServer(app);
+const WebSocket = require('ws');
+const wss = new WebSocket.Server({ server:server });
 
 app.use(cors());
 app.use(helmet())
@@ -66,6 +70,23 @@ app.use((err, req, res, next) => {
    res.status(500).send('Something broke!')
 })
 
-app.listen(PORT, () => {
+
+wss.on('connection', function connection(ws) {
+  console.log('A new client Connected!');
+  ws.send('Welcome New Client!');
+
+  ws.on('message', function incoming(message) {
+    console.log('received: %s', message);
+
+    wss.clients.forEach(function each(client) {
+      if (client !== ws && client.readyState === WebSocket.OPEN) {
+        client.send(message);
+      }
+    });
+    
+  });
+});
+
+server.listen(PORT, () => {
   console.log('Server is listening on Port:', PORT)
 })
